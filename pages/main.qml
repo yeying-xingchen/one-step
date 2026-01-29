@@ -54,6 +54,7 @@ Window {
         anchors.top: parent.top           // 顶部对齐
         anchors.bottom: parent.bottom     // 底部对齐
         anchors.leftMargin: 20
+        anchors.rightMargin: 20
         anchors.topMargin: 5
         source: currentView
     }
