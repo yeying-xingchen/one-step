@@ -1,34 +1,37 @@
-// 导入Qt Quick相关模块
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
-// 导入自定义RinUI组件库
+import QtQuick.Layouts
 import RinUI
 
-// 主窗口定义
 Window {
-    width: 640          // 窗口宽度
-    height: 480         // 窗口高度
-    visible: true       // 设置窗口可见
-    title: qsTr("Hello World")  // 窗口标题
+    width: 640
+    height: 480
+    visible: true
+    title: qsTr("One-Step")
 
-    // 左侧导航列表视图
+    property string currentView: "home.qml"
+
+    // 左侧导航栏
     ListView {
+        id: navList
         width: 60
-        height: 300
-        // 定义列表数据模型
+        height: parent.height  // 高度撑满窗口
+        anchors.left: parent.left
+        anchors.top: parent.top
+
         model: ListModel {
-            ListElement { name: "home", icon: "ic_fluent_home_20_regular" }      // 首页项
-            ListElement { name: "list", icon: "ic_fluent_list_20_regular" }      // 列表项
-            ListElement { name: "about", icon: "ic_fluent_info_20_regular" }     // 关于项
+            ListElement { name: "home"; icon: "ic_fluent_home_20_regular" }
+            ListElement { name: "list"; icon: "ic_fluent_list_20_regular" }
+            ListElement { name: "about"; icon: "ic_fluent_info_20_regular" }
         }
 
         // 定义列表项委托（外观和行为）
         delegate: ListViewDelegate {
             // 左侧区域显示图标
             leftArea: IconWidget {
-                icon: model.icon // 从数据模型获取图标
-                size: 22         // 图标大小
+                icon: model.icon
+                size: 22
             }
 
             // 中间区域留空
@@ -36,8 +39,22 @@ Window {
 
             // 点击事件处理
             onClicked: {
-                console.log("Clicked on item:", model.titleText);
+                console.log("Clicked on item:", model.name);
+                currentView = model.name + ".qml"
             }
         }
+    }
+
+    // 主内容区域：Loader
+    Loader {
+        id: pageLoader
+        // 关键：让 Loader 占据右侧剩余空间
+        anchors.left: navList.right       // 左边紧贴导航栏
+        anchors.right: parent.right       // 右边到窗口右边缘
+        anchors.top: parent.top           // 顶部对齐
+        anchors.bottom: parent.bottom     // 底部对齐
+        anchors.leftMargin: 20
+        anchors.topMargin: 5
+        source: currentView
     }
 }
